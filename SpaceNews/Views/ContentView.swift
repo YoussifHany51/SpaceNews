@@ -13,7 +13,7 @@ struct ContentView: View {
     
     var body: some View {
         NavigationStack {
-            VStack{ 
+            VStack{
                 NewsView()
                     .opacity(opacity)
             }
