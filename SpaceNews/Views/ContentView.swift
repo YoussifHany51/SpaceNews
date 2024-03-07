@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct ContentView: View {
-    @StateObject var data = SpaceAPI()
+    @StateObject var data = SpaceNetworkManager()
     @State private var opacity = 0.0
     
     var body: some View {

@@ -18,7 +18,7 @@ struct SpaceNews:Codable,Identifiable{
     var publishedAt:String
 }
 
-@MainActor class SpaceAPI:ObservableObject{
+@MainActor class SpaceNetworkManager:ObservableObject{
     @Published var news: [SpaceNews] = []
     
     func getData(){
@@ -44,4 +44,32 @@ struct SpaceNews:Codable,Identifiable{
             }
         }.resume()
     }
+    
+    func fetchData() async throws -> [SpaceNews]{
+        let endpoint =  "https://api.spaceflightnewsapi.net/v3/articles"
+        
+        guard let url = URL(string: endpoint) else {
+            throw APIError.invalidURL
+        }
+        let (data,response) = try await URLSession.shared.data(from: url)
+        
+        guard let response = response as? HTTPURLResponse , response.statusCode == 200 else {
+            throw APIError.invalidResponse
+        }
+        do{
+            let decoder = JSONDecoder()
+            decoder.keyDecodingStrategy = .convertFromSnakeCase
+            let returnedData = try decoder.decode([SpaceNews].self, from: data)
+            return returnedData
+        }catch{
+            throw APIError.invalidData
+        }
+    }
+}
+
+
+enum APIError : Error{
+    case invalidURL
+    case invalidResponse
+    case invalidData
 }

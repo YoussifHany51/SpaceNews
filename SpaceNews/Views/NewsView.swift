@@ -9,7 +9,7 @@ import SwiftUI
 
 struct NewsView: View {
     
-    @EnvironmentObject var data : SpaceAPI
+    @EnvironmentObject var data : SpaceNetworkManager
     @Environment(\.openURL) var openURL
 //    private var textWidth = 300.0
     
@@ -22,15 +22,28 @@ struct NewsView: View {
                     }
             }
         }
-        .refreshable {
-            data.getData()
-        }
+        .task {
+                do{
+                    data.news = try await data.fetchData()
+                }catch APIError.invalidURL {
+                    print("Invalid URL")
+                }catch APIError.invalidData {
+                    print("Invalid Data")
+                }catch APIError.invalidResponse {
+                    print("Invalid Response")
+                }catch {
+                    print("Unexpected Error")
+                }
+            }
+//        .refreshable {
+//            data.getData()
+//        }
     }
 }
 
 struct NewsView_Previews: PreviewProvider {
     static var previews: some View {
         NewsView()
-            .environmentObject(SpaceAPI())
+            .environmentObject(SpaceNetworkManager())
     }
 }
