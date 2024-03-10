@@ -20,7 +20,6 @@ struct ContentView: View {
             .navigationTitle("Space News")
             .environmentObject(data)
             .onAppear{
-                data.getData()
                 withAnimation(.easeIn(duration: 2)) {
                     opacity = 1.0
                 }

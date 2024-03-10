@@ -21,30 +21,30 @@ struct SpaceNews:Codable,Identifiable{
 @MainActor class SpaceNetworkManager:ObservableObject{
     @Published var news: [SpaceNews] = []
     
-    func getData(){
-        guard let url = URL(string: "https://api.spaceflightnewsapi.net/v3/articles")else{
-            print("API NOT Found")
-            return
-        }
-        
-        URLSession.shared.dataTask(with: url){ data, response, error in
-            // This part is used to not force unwrappe data in JSONDecoder 
-            guard let data = data else{
-                let tempError = error!.localizedDescription
-                DispatchQueue.main.async {
-                    self.news = [SpaceNews(id: 0, title: tempError, url: "Error", imageUrl: "Error", newsSite: "Error", summary: "Error", publishedAt: "Error")]
-                }
-                return
-            }
-            //
-            let spaceData = try! JSONDecoder().decode([SpaceNews].self, from: data)
-            DispatchQueue.main.async {
-                print("Loaded Data \(spaceData.count)")
-                self.news = spaceData
-            }
-        }.resume()
-    }
-    
+//    func getData(){
+//        guard let url = URL(string: "https://api.spaceflightnewsapi.net/v3/articles")else{
+//            print("API NOT Found")
+//            return
+//        }
+//        
+//        URLSession.shared.dataTask(with: url){ data, response, error in
+//            // This part is used to not force unwrappe data in JSONDecoder 
+//            guard let data = data else{
+//                let tempError = error!.localizedDescription
+//                DispatchQueue.main.async {
+//                    self.news = [SpaceNews(id: 0, title: tempError, url: "Error", imageUrl: "Error", newsSite: "Error", summary: "Error", publishedAt: "Error")]
+//                }
+//                return
+//            }
+//            //
+//            let spaceData = try! JSONDecoder().decode([SpaceNews].self, from: data)
+//            DispatchQueue.main.async {
+//                print("Loaded Data \(spaceData.count)")
+//                self.news = spaceData
+//            }
+//        }.resume()
+//    }
+    // MARK: Main API Func
     func fetchData() async throws -> [SpaceNews]{
         let endpoint =  "https://api.spaceflightnewsapi.net/v3/articles"
         
